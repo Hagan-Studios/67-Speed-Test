@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>67 Speed Test</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #09090b;
+      color: #fafafa;
+      overflow-x: hidden;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .mirrored {
+      transform: scaleX(-1);
+    }
+    .rep-pop {
+      animation: pop 0.12s ease-out;
+    }
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    /* Clean Glass Panel */
+    .glass-card {
+      background: rgba(24, 24, 27, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(63, 63, 70, 0.5);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(113, 113, 122, 0.3);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="min-h-[100dvh] flex flex-col justify-between items-center p-3 sm:p-6 bg-zinc-950 text-zinc-100 select-none">
+
+  <!-- TOP HEADER -->
+  <header class="w-full max-w-4xl flex justify-between items-center mb-3 sm:mb-4 z-20">
+    <div class="flex items-center gap-2.5 sm:gap-3">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-zinc-100 text-zinc-950 flex items-center justify-center font-bold text-sm sm:text-base shadow-sm">
+        <img src="icon.png" alt="GCC Logo Dark">
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">67 Speed Test</h1>
+        </div>
+        <p class="text-[11px] sm:text-xs text-zinc-400">Six sevennnn</p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center gap-1.5 sm:gap-2">
+      <!-- Flip Camera Toggle (Mobile Front/Rear) -->
+      <button id="flip-cam-btn" title="Flip Camera" class="glass-card p-2 sm:p-2.5 rounded-xl hover:bg-zinc-800/80 transition text-zinc-400 hover:text-zinc-100 border border-zinc-800 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </button>
+
+      <!-- Mirror Toggle -->
+      <button id="mirror-btn" title="Toggle Camera Mirror" class="glass-card p-2 sm:p-2.5 rounded-xl hover:bg-zinc-800/80 transition text-zinc-400 hover:text-zinc-100 border border-zinc-800">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+      </button>
+
+      <!-- Mute Toggle -->
+      <button id="sound-btn" title="Toggle Audio" class="glass-card p-2 sm:p-2.5 rounded-xl hover:bg-zinc-800/80 transition text-zinc-400 hover:text-zinc-100 border border-zinc-800">
+        <svg id="sound-icon-on" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+        </svg>
+        <svg id="sound-icon-off" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 hidden text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+        </svg>
+      </button>
+
+      <!-- FPS Counter Toggle -->
+      <button id="fps-toggle-btn" title="Toggle FPS Counter" class="glass-card px-2 sm:px-2.5 py-1.5 rounded-xl hover:bg-zinc-800/80 transition text-xs font-mono text-zinc-400 border border-zinc-800">
+        FPS <span id="fps-val" class="text-zinc-200 font-semibold ml-0.5 sm:ml-1">--</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN GAME AREA -->
+  <main class="w-full max-w-4xl relative flex-1 flex flex-col justify-center items-center">
+    
+    <!-- CAMERA CANVAS CONTAINER (Adaptive aspect ratio for mobile portrait vs landscape) -->
+    <div id="viewport" class="relative w-full aspect-[3/4] sm:aspect-[16/9] max-h-[62dvh] sm:max-h-[70vh] rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 shadow-2xl flex items-center justify-center">
+      
+      <!-- Video Element (Hidden feed source) -->
+      <video id="webcam" class="hidden" playsinline muted></video>
+
+      <!-- Main Rendering Canvas -->
+      <canvas id="output_canvas" class="w-full h-full object-cover mirrored"></canvas>
+
+      <!-- LIVE GAME HUD OVERLAY -->
+      <div id="hud-overlay" class="absolute inset-0 pointer-events-none flex flex-col justify-between p-4 sm:p-6 hidden">
+        
+        <!-- Top Stats Bar -->
+        <div class="flex justify-between items-start">
+          
+          <!-- Timer Display -->
+          <div class="glass-card px-3.5 py-2 rounded-xl flex items-center gap-2.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p class="text-[9px] uppercase font-bold tracking-wider text-zinc-400">Time</p>
+              <p id="timer-display" class="font-mono text-xl sm:text-2xl font-bold text-zinc-100 tracking-tight">20.0s</p>
+            </div>
+          </div>
+
+          <!-- Live Rank Badge -->
+          <div id="live-rank-badge" class="glass-card px-3.5 py-2 rounded-xl flex items-center gap-2">
+            <span id="rank-icon" class="text-base">🥉</span>
+            <span id="rank-text" class="text-xs font-semibold text-zinc-300 uppercase tracking-wide">Beginner</span>
+          </div>
+        </div>
+
+        <!-- Center Rep Counter -->
+        <div class="self-center text-center">
+          <p class="text-[10px] uppercase font-bold tracking-widest text-zinc-400 mb-1">PUMP REPS</p>
+          <div id="rep-counter-container" class="inline-block">
+            <h2 id="rep-counter" class="text-7xl sm:text-9xl font-extrabold text-white tracking-tight leading-none drop-shadow-md">0</h2>
+          </div>
+        </div>
+
+        <!-- Bottom Speed Bar -->
+        <div class="w-full max-w-md self-center glass-card p-2.5 rounded-xl">
+          <div class="flex justify-between text-[11px] font-semibold text-zinc-400 mb-1.5">
+            <span>VELOCITY</span>
+            <span id="rep-rate" class="font-mono text-zinc-300">0.0 REPS/SEC</span>
+          </div>
+          <div class="w-full h-2 bg-zinc-950 rounded-full overflow-hidden p-0.5 border border-zinc-800">
+            <div id="speed-progress-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-100" style="width: 0%"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COUNTDOWN OVERLAY -->
+      <div id="countdown-overlay" class="absolute inset-0 bg-zinc-950/80 backdrop-blur-md flex flex-col items-center justify-center hidden z-30">
+        <span id="countdown-text" class="text-8xl sm:text-9xl font-black text-white tracking-tight animate-bounce">3</span>
+        <p class="mt-4 text-xs font-semibold uppercase tracking-widest text-zinc-400">Get Ready</p>
+      </div>
+
+      <!-- INITIAL START / CAMERA PERMISSION OVERLAY -->
+      <div id="start-overlay" class="absolute inset-0 bg-zinc-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-30">
+        
+        <!-- Status / Model Loading Indicator -->
+        <div id="loading-box" class="flex flex-col items-center gap-3 mb-6">
+          <div id="loading-spinner" class="w-8 h-8 border-2 border-zinc-700 border-t-zinc-200 rounded-full animate-spin"></div>
+          <p id="loading-text" class="text-xs font-medium text-zinc-400">Loading pose detection model & requesting camera...</p>
+          <button id="enable-cam-btn" class="hidden text-xs bg-zinc-800 hover:bg-zinc-700 text-emerald-400 px-4 py-2 rounded-xl border border-zinc-700 mt-1 font-medium transition">
+            📷 Tap to Allow Camera Access
+          </button>
+        </div>
+
+        <!-- Instruction Card -->
+        <div id="instructions-box" class="hidden max-w-sm w-full text-zinc-300 text-xs space-y-3 mb-6">
+          <div class="glass-card p-4 rounded-xl text-left space-y-2.5 border border-zinc-800">
+            <div class="flex items-center gap-2.5">
+              <span class="w-5 h-5 rounded-md bg-zinc-800 text-zinc-300 text-[10px] flex items-center justify-center font-bold border border-zinc-700/60">1</span>
+              <p class="font-medium text-zinc-200">Step back so upper body is visible</p>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <span class="w-5 h-5 rounded-md bg-zinc-800 text-zinc-300 text-[10px] flex items-center justify-center font-bold border border-zinc-700/60">2</span>
+              <p class="font-medium text-zinc-200">Pump arms up & down continuously</p>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <span class="w-5 h-5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] flex items-center justify-center font-bold border border-emerald-500/30">3</span>
+              <p class="font-medium text-zinc-200">Reach <span class="text-emerald-400 font-bold">67 REPS</span> in 20s for Legendary rank</p>
+            </div>
+          </div>
+        </div>
+
+        <button id="start-btn" disabled class="disabled:opacity-40 disabled:cursor-not-allowed bg-zinc-100 hover:bg-white text-zinc-950 font-semibold text-base py-3 px-8 rounded-xl transition duration-150 transform active:scale-95 shadow-md">
+          Start Challenge
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- RESULTS MODAL SCREEN -->
+  <div id="results-modal" class="fixed inset-0 bg-zinc-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card max-w-md w-full rounded-2xl p-6 sm:p-7 text-center relative overflow-hidden shadow-2xl border border-zinc-800">
+      
+      <p class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">CHALLENGE COMPLETE</p>
+      <h2 class="text-2xl font-bold text-white mb-5">Final Summary</h2>
+
+      <!-- Score & Rank Container -->
+      <div class="bg-zinc-900/90 p-5 rounded-xl border border-zinc-800 mb-5 flex flex-col items-center">
+        <!-- Score -->
+        <div id="final-rep-count" class="font-mono text-6xl sm:text-7xl font-extrabold text-white mb-1 tracking-tight">
+          0
+        </div>
+        <p class="text-[10px] uppercase font-bold text-zinc-400 mb-3 tracking-wider">TOTAL REPS</p>
+
+        <!-- Rank Badge -->
+        <div id="final-rank-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-800/90 border border-zinc-700/60">
+          <span id="final-rank-icon" class="text-base">🥉</span>
+          <span id="final-rank-text" class="text-xs font-semibold text-zinc-200 uppercase tracking-wide">BEGINNER</span>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-2 gap-2.5 text-left mb-5">
+        <div class="bg-zinc-900/60 p-3 rounded-xl border border-zinc-800">
+          <p class="text-[10px] uppercase font-bold text-zinc-400">Average Pace</p>
+          <p id="stat-rps" class="font-mono text-base font-bold text-zinc-200 mt-0.5">0.0 reps/s</p>
+        </div>
+        <div class="bg-zinc-900/60 p-3 rounded-xl border border-zinc-800">
+          <p class="text-[10px] uppercase font-bold text-zinc-400">67 Benchmark</p>
+          <p id="stat-target-pct" class="font-mono text-base font-bold text-emerald-400 mt-0.5">0%</p>
+        </div>
+      </div>
+
+      <!-- Benchmark Bar -->
+      <div class="mb-6 text-left">
+        <div class="flex justify-between text-xs font-medium text-zinc-400 mb-1.5">
+          <span>Rank Threshold</span>
+          <span id="benchmark-next-text" class="text-zinc-300">Next: Fast (30 Reps)</span>
+        </div>
+        <div class="w-full h-2 bg-zinc-950 rounded-full overflow-hidden p-0.5 border border-zinc-800">
+          <div id="final-progress-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-2.5">
+        <button id="retry-btn" class="flex-1 bg-zinc-100 hover:bg-white text-zinc-950 font-semibold py-3 px-4 rounded-xl transition transform active:scale-95 text-sm shadow-sm">
+          Play Again
+        </button>
+        <button id="share-btn" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium py-3 px-4 rounded-xl border border-zinc-700/60 transition text-sm">
+          Share
+        </button>
+      </div>
+
+      <!-- Copy Notification -->
+      <p id="copy-toast" class="text-xs text-emerald-400 font-medium mt-3 opacity-0 transition-opacity duration-200">
+        Result copied to clipboard
+      </p>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="w-full max-w-4xl text-center py-2 text-[11px] text-zinc-400 font-medium">
+    Global Connect Club &bull; Napoleon Bonaparte &bull; RIP Triple T
+  </footer>
+
+  <!-- Web Audio API Sound Engine Script -->
+  <script>
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playRep(count) {
+        if (this.muted || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        
+        // Elevate pitch as rep count increases towards 67
+        const freq = 420 + Math.min(count, 67) * 7;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.35, this.ctx.currentTime + 0.05);
+
+        gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.07);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.07);
+      }
+      playBeep(freq = 600, duration = 0.12) {
+        if (this.muted || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+      }
+      playFanfare(isLegendary) {
+        if (this.muted || !this.ctx) return;
+        const notes = isLegendary 
+          ? [523.25, 659.25, 783.99, 1046.50, 1318.51] 
+          : [440, 554.37, 659.25, 880];
+        notes.forEach((freq, i) => {
+          setTimeout(() => this.playBeep(freq, 0.2), i * 110);
+        });
+      }
+    }
+    const soundEngine = new SoundEngine();
+  </script>
+
+  <!-- MediaPipe Tasks-Vision Integration -->
+  <script type="module">
+    import { PoseLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+
+    // App State Variables
+    let poseLandmarker = null;
+    let webcamElement = document.getElementById('webcam');
+    let canvasElement = document.getElementById('output_canvas');
+    let canvasCtx = canvasElement.getContext('2d');
+    
+    let gameState = 'IDLE'; // IDLE, COUNTDOWN, PLAYING, GAMEOVER
+    let reps = 0;
+    let gameTimer = 20.0;
+    let timerInterval = null;
+    let isMirrored = true;
+    let currentFacingMode = 'user'; // 'user' or 'environment'
+
+    // Rep Detection Hysteresis State Machine per arm
+    let leftArmState = 'DOWN';
+    let rightArmState = 'DOWN';
+    let lastLeftRepTime = 0;
+    let lastRightRepTime = 0;
+    const DEBOUNCE_MS = 65; // Minimum ms between reps per arm to avoid false doubles
+
+    // FPS calculation
+    let lastFrameTime = performance.now();
+    let frameCount = 0;
+    let currentFps = 0;
+
+    // Particle FX System for Hit Sparks & Victory Confetti
+    let particles = [];
+
+    // DOM References
+    const startBtn = document.getElementById('start-btn');
+    const loadingBox = document.getElementById('loading-box');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const loadingText = document.getElementById('loading-text');
+    const enableCamBtn = document.getElementById('enable-cam-btn');
+    const instructionsBox = document.getElementById('instructions-box');
+    const startOverlay = document.getElementById('start-overlay');
+    const flipCamBtn = document.getElementById('flip-cam-btn');
+    const mirrorBtn = document.getElementById('mirror-btn');
+    const soundBtn = document.getElementById('sound-btn');
+    const soundIconOn = document.getElementById('sound-icon-on');
+    const soundIconOff = document.getElementById('sound-icon-off');
+    const fpsToggleBtn = document.getElementById('fps-toggle-btn');
+    const fpsVal = document.getElementById('fps-val');
+    const hudOverlay = document.getElementById('hud-overlay');
+    const timerDisplay = document.getElementById('timer-display');
+    const liveRankBadge = document.getElementById('live-rank-badge');
+    const rankIcon = document.getElementById('rank-icon');
+    const rankText = document.getElementById('rank-text');
+    const repCounterContainer = document.getElementById('rep-counter-container');
+    const repCounter = document.getElementById('rep-counter');
+    const repRateText = document.getElementById('rep-rate');
+    const speedProgressBar = document.getElementById('speed-progress-bar');
+    const countdownOverlay = document.getElementById('countdown-overlay');
+    const countdownText = document.getElementById('countdown-text');
+    const resultsModal = document.getElementById('results-modal');
+    const finalRepCount = document.getElementById('final-rep-count');
+    const finalRankBadge = document.getElementById('final-rank-badge');
+    const finalRankIcon = document.getElementById('final-rank-icon');
+    const finalRankText = document.getElementById('final-rank-text');
+    const statRps = document.getElementById('stat-rps');
+    const statTargetPct = document.getElementById('stat-target-pct');
+    const benchmarkNextText = document.getElementById('benchmark-next-text');
+    const finalProgressBar = document.getElementById('final-progress-bar');
+    const retryBtn = document.getElementById('retry-btn');
+    const shareBtn = document.getElementById('share-btn');
+    const copyToast = document.getElementById('copy-toast');
+
+    // 1. Initialize MediaPipe Pose Detector & Camera in Parallel
+    async function initPoseLandmarker() {
+      // Request camera immediately in parallel without waiting for MediaPipe WASM download
+      const cameraPromise = setupCamera().catch(err => {
+        console.warn("Camera auto-prompt pending user gesture:", err);
+        return false;
+      });
+
+      try {
+        const vision = await FilesetResolver.forVisionTasks(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+        );
+        poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
+          baseOptions: {
+            modelAssetPath: `https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task`,
+            delegate: "GPU"
+          },
+          runningMode: "VIDEO",
+          numPoses: 1
+        });
+
+        const camSuccess = await cameraPromise;
+
+        loadingBox.classList.add('hidden');
+        instructionsBox.classList.remove('hidden');
+        startBtn.disabled = false;
+
+        if (!camSuccess && (!webcamElement.srcObject || webcamElement.srcObject.getVideoTracks().length === 0)) {
+          enableCamBtn.classList.remove('hidden');
+          loadingText.innerText = "Camera access required. Please tap below.";
+        }
+        
+        requestAnimationFrame(renderLoop);
+      } catch (err) {
+        console.error("MediaPipe initialization error:", err);
+        if (loadingSpinner) loadingSpinner.classList.add('hidden');
+        if (loadingText) loadingText.innerText = "Camera or AI model failed to load. Please grant camera permissions.";
+        if (enableCamBtn) enableCamBtn.classList.remove('hidden');
+      }
+    }
+
+    // 2. Setup Camera Stream with Robust Mobile Fallbacks
+    async function setupCamera() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        if (loadingText) {
+          loadingText.innerText = "Camera API unavailable. Ensure page is loaded via HTTPS.";
+        }
+        throw new Error("getUserMedia is not supported on this context (requires HTTPS).");
+      }
+
+      if (webcamElement.srcObject) {
+        webcamElement.srcObject.getTracks().forEach(track => track.stop());
+      }
+
+      // Tiered camera constraints fallback sequence for mobile browsers
+      const constraintOptions = [
+        { video: { facingMode: { ideal: currentFacingMode }, width: { ideal: 640 }, height: { ideal: 480 } }, audio: false },
+        { video: { facingMode: currentFacingMode }, audio: false },
+        { video: true, audio: false }
+      ];
+
+      let stream = null;
+      let lastErr = null;
+
+      for (const constraints of constraintOptions) {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+          if (stream) break;
+        } catch (err) {
+          lastErr = err;
+        }
+      }
+
+      if (!stream) {
+        throw lastErr || new Error("Unable to access camera");
+      }
+
+      webcamElement.srcObject = stream;
+      return new Promise((resolve) => {
+        webcamElement.onloadedmetadata = () => {
+          webcamElement.play().catch(e => console.log("Video play error:", e));
+          canvasElement.width = webcamElement.videoWidth || 640;
+          canvasElement.height = webcamElement.videoHeight || 480;
+          resolve(true);
+        };
+      });
+    }
+
+    if (enableCamBtn) {
+      enableCamBtn.addEventListener('click', async () => {
+        try {
+          await setupCamera();
+          enableCamBtn.classList.add('hidden');
+          if (loadingText) loadingText.innerText = "Camera connected!";
+        } catch (e) {
+          if (loadingText) loadingText.innerText = "Camera access denied. Check your browser permissions.";
+        }
+      });
+    }
+
+    // Flip Front/Back Camera on Phones
+    if (flipCamBtn) {
+      flipCamBtn.addEventListener('click', async () => {
+        currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+        isMirrored = (currentFacingMode === 'user');
+        if (isMirrored) {
+          canvasElement.classList.add('mirrored');
+        } else {
+          canvasElement.classList.remove('mirrored');
+        }
+        await setupCamera();
+      });
+    }
+
+    // Dynamic Handle Device Orientation / Window Resizing
+    window.addEventListener('resize', () => {
+      if (webcamElement.videoWidth && webcamElement.videoHeight) {
+        canvasElement.width = webcamElement.videoWidth;
+        canvasElement.height = webcamElement.videoHeight;
+      }
+    });
+
+    soundBtn.addEventListener('click', () => {
+      soundEngine.muted = !soundEngine.muted;
+      soundIconOn.classList.toggle('hidden', soundEngine.muted);
+      soundIconOff.classList.toggle('hidden', !soundEngine.muted);
+    });
+
+    shareBtn.addEventListener('click', () => {
+      const summaryText = `⚡ I scored ${reps} REPS in the 67SPEED Arm Speed Challenge! Rank: ${getRank(reps).title}. Can you beat me?`;
+      
+      // Fallback copy using execCommand for iframe compatibility
+      const dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = summaryText;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+
+      copyToast.classList.remove('opacity-0');
+      setTimeout(() => copyToast.classList.add('opacity-0'), 2500);
+    });
+
+    // Controls & Event Listeners
+    let showFps = true;
+    if (fpsToggleBtn) {
+      fpsToggleBtn.addEventListener('click', () => {
+        showFps = !showFps;
+        fpsVal.parentElement.classList.toggle('opacity-40', !showFps);
+      });
+    }
+
+    if (mirrorBtn) {
+      mirrorBtn.addEventListener('click', () => {
+        isMirrored = !isMirrored;
+        if (isMirrored) {
+          canvasElement.classList.add('mirrored');
+        } else {
+          canvasElement.classList.remove('mirrored');
+        }
+      });
+    }
+
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        soundEngine.init();
+        startCountdown();
+      });
+    }
+
+    if (retryBtn) {
+      retryBtn.addEventListener('click', () => {
+        resultsModal.classList.add('hidden');
+        startCountdown();
+      });
+    }
+
+    // Main 60FPS Video Inference & Render Loop
+    function renderLoop(timestamp) {
+      frameCount++;
+      const delta = timestamp - lastFrameTime;
+      if (delta >= 1000) {
+        currentFps = Math.round((frameCount * 1000) / delta);
+        frameCount = 0;
+        lastFrameTime = timestamp;
+        if (fpsVal && showFps) fpsVal.innerText = currentFps;
+      }
+
+      if (webcamElement.readyState >= 2) {
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        canvasCtx.drawImage(webcamElement, 0, 0, canvasElement.width, canvasElement.height);
+
+        if (poseLandmarker) {
+          const results = poseLandmarker.detectForVideo(webcamElement, timestamp);
+          if (results && results.landmarks && results.landmarks.length > 0) {
+            const landmarks = results.landmarks[0];
+            drawSkeleton(landmarks);
+
+            if (gameState === 'PLAYING') {
+              detectReps(landmarks, timestamp);
+            }
+          }
+        }
+
+        updateAndDrawParticles();
+      }
+
+      requestAnimationFrame(renderLoop);
+    }
+
+    // Arm Speed Motion Tracking & Rep Detector
+    function detectReps(landmarks, timestamp) {
+      const w = canvasElement.width;
+      const h = canvasElement.height;
+
+      const leftShoulder = landmarks[11];
+      const rightShoulder = landmarks[12];
+      const leftElbow = landmarks[13];
+      const rightElbow = landmarks[14];
+      const leftWrist = landmarks[15];
+      const rightWrist = landmarks[16];
+
+      const leftVisible = leftShoulder && leftElbow && leftWrist && 
+                          leftShoulder.visibility > 0.4 && leftElbow.visibility > 0.4 && leftWrist.visibility > 0.4;
+      const rightVisible = rightShoulder && rightElbow && rightWrist && 
+                           rightShoulder.visibility > 0.4 && rightElbow.visibility > 0.4 && rightWrist.visibility > 0.4;
+
+      // Left Arm Oscillation Detection
+      if (leftVisible) {
+        const upThreshold = leftElbow.y - 0.02;
+        const downThreshold = leftElbow.y + 0.04;
+
+        if (leftArmState === 'DOWN' && leftWrist.y < upThreshold) {
+          leftArmState = 'UP';
+        } else if (leftArmState === 'UP' && leftWrist.y > downThreshold) {
+          if (timestamp - lastLeftRepTime > DEBOUNCE_MS) {
+            leftArmState = 'DOWN';
+            lastLeftRepTime = timestamp;
+            triggerRepCount(leftWrist.x * w, leftWrist.y * h);
+          }
+        }
+      }
+
+      // Right Arm Oscillation Detection
+      if (rightVisible) {
+        const upThreshold = rightElbow.y - 0.02;
+        const downThreshold = rightElbow.y + 0.04;
+
+        if (rightArmState === 'DOWN' && rightWrist.y < upThreshold) {
+          rightArmState = 'UP';
+        } else if (rightArmState === 'UP' && rightWrist.y > downThreshold) {
+          if (timestamp - lastRightRepTime > DEBOUNCE_MS) {
+            rightArmState = 'DOWN';
+            lastRightRepTime = timestamp;
+            triggerRepCount(rightWrist.x * w, rightWrist.y * h);
+          }
+        }
+      }
+    }
+
+    function triggerRepCount(sparkX, sparkY) {
+      reps++;
+      repCounter.innerText = reps;
+      repCounterContainer.classList.remove('rep-pop');
+      void repCounterContainer.offsetWidth;
+      repCounterContainer.classList.add('rep-pop');
+
+      soundEngine.playRep(reps);
+      spawnRepSparks(sparkX, sparkY);
+      updateLiveStats();
+    }
+
+    // Minimal Skeleton Visualizer
+    function drawSkeleton(landmarks) {
+      const w = canvasElement.width;
+      const h = canvasElement.height;
+
+      const connections = [
+        [11, 12], [11, 13], [13, 15],
+        [12, 14], [14, 16], [11, 23], [12, 24], [23, 24]
+      ];
+
+      canvasCtx.lineWidth = 3;
+      canvasCtx.strokeStyle = 'rgba(16, 185, 129, 0.7)';
+      canvasCtx.shadowColor = 'rgba(16, 185, 129, 0.4)';
+      canvasCtx.shadowBlur = 8;
+
+      for (const [i, j] of connections) {
+        const p1 = landmarks[i];
+        const p2 = landmarks[j];
+        if (p1 && p2 && p1.visibility > 0.4 && p2.visibility > 0.4) {
+          canvasCtx.beginPath();
+          canvasCtx.moveTo(p1.x * w, p1.y * h);
+          canvasCtx.lineTo(p2.x * w, p2.y * h);
+          canvasCtx.stroke();
+        }
+      }
+
+      const keyJoints = [11, 12, 13, 14, 15, 16];
+      canvasCtx.shadowBlur = 0;
+      for (const idx of keyJoints) {
+        const p = landmarks[idx];
+        if (p && p.visibility > 0.4) {
+          canvasCtx.fillStyle = (idx === 15 || idx === 16) ? '#34d399' : '#fafafa';
+          canvasCtx.beginPath();
+          canvasCtx.arc(p.x * w, p.y * h, (idx === 15 || idx === 16) ? 7 : 5, 0, 2 * Math.PI);
+          canvasCtx.fill();
+        }
+      }
+    }
+
+    // Particle FX Engine
+    function spawnRepSparks(x, y) {
+      for (let i = 0; i < 10; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 4;
+        particles.push({
+          x: x, y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1.0,
+          decay: 0.05 + Math.random() * 0.03,
+          size: 3 + Math.random() * 3,
+          color: '#34d399'
+        });
+      }
+    }
+
+    function spawnConfettiBurst() {
+      const colors = ['#34d399', '#fbbf24', '#60a5fa', '#f472b6', '#a78bfa'];
+      const w = canvasElement.width;
+      const h = canvasElement.height;
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x: w / 2 + (Math.random() - 0.5) * 200,
+          y: h / 2 + (Math.random() - 0.5) * 100,
+          vx: (Math.random() - 0.5) * 12,
+          vy: -6 - Math.random() * 8,
+          gravity: 0.3,
+          life: 1.0,
+          decay: 0.015,
+          size: 5 + Math.random() * 5,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+    }
+
+    function updateAndDrawParticles() {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.gravity) p.vy += p.gravity;
+        p.life -= p.decay;
+
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        canvasCtx.save();
+        canvasCtx.globalAlpha = p.life;
+        canvasCtx.fillStyle = p.color;
+        canvasCtx.beginPath();
+        canvasCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        canvasCtx.fill();
+        canvasCtx.restore();
+      }
+    }
+
+    // Rank Helper Logic
+    function getRank(count) {
+      if (count >= 67) return { title: 'LEGENDARY', icon: '🔥', next: 'MAX RANK', nextThreshold: 67 };
+      if (count >= 50) return { title: 'PRO', icon: '⚡', next: 'Legendary (67)', nextThreshold: 67 };
+      if (count >= 30) return { title: 'FAST', icon: '🥈', next: 'Pro (50)', nextThreshold: 50 };
+      return { title: 'BEGINNER', icon: '🥉', next: 'Fast (30)', nextThreshold: 30 };
+    }
+
+    // Live Stats & HUD Updates
+    function updateLiveStats() {
+      const elapsed = Math.max(0.1, 20.0 - gameTimer);
+      const rps = (reps / elapsed).toFixed(1);
+      repRateText.innerText = `${rps} REPS/SEC`;
+
+      const progressPct = Math.min(100, (reps / 67) * 100);
+      speedProgressBar.style.width = `${progressPct}%`;
+
+      const rank = getRank(reps);
+      rankIcon.innerText = rank.icon;
+      rankText.innerText = rank.title;
+    }
+
+    // Countdown Flow
+    function startCountdown() {
+      gameState = 'COUNTDOWN';
+      startOverlay.classList.add('hidden');
+      resultsModal.classList.add('hidden');
+      countdownOverlay.classList.remove('hidden');
+      hudOverlay.classList.add('hidden');
+
+      let count = 3;
+      countdownText.innerText = count;
+      soundEngine.playBeep(440, 0.15);
+
+      const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          countdownText.innerText = count;
+          soundEngine.playBeep(440, 0.15);
+        } else if (count === 0) {
+          countdownText.innerText = "GO!";
+          soundEngine.playBeep(880, 0.25);
+        } else {
+          clearInterval(interval);
+          countdownOverlay.classList.add('hidden');
+          startGame();
+        }
+      }, 800);
+    }
+
+    // Game Lifecycle Management
+    function startGame() {
+      gameState = 'PLAYING';
+      reps = 0;
+      gameTimer = 20.0;
+      leftArmState = 'DOWN';
+      rightArmState = 'DOWN';
+      
+      repCounter.innerText = '0';
+      timerDisplay.innerText = '20.0s';
+      hudOverlay.classList.remove('hidden');
+
+      updateLiveStats();
+
+      if (timerInterval) clearInterval(timerInterval);
+      const startTime = performance.now();
+      const initialDuration = 20.0;
+
+      timerInterval = setInterval(() => {
+        const elapsed = (performance.now() - startTime) / 1000;
+        gameTimer = Math.max(0, initialDuration - elapsed);
+        timerDisplay.innerText = gameTimer.toFixed(1) + 's';
+
+        updateLiveStats();
+
+        if (gameTimer <= 0) {
+          clearInterval(timerInterval);
+          endGame();
+        }
+      }, 50);
+    }
+
+    function endGame() {
+      gameState = 'GAMEOVER';
+      if (timerInterval) clearInterval(timerInterval);
+
+      const rank = getRank(reps);
+      soundEngine.playFanfare(reps >= 67);
+
+      finalRepCount.innerText = reps;
+      finalRankIcon.innerText = rank.icon;
+      finalRankText.innerText = rank.title;
+      statRps.innerText = (reps / 20).toFixed(1) + ' reps/s';
+      
+      const pct = Math.min(100, Math.round((reps / 67) * 100));
+      statTargetPct.innerText = pct + '%';
+
+      benchmarkNextText.innerText = `Next Target: ${rank.next}`;
+      finalProgressBar.style.width = Math.min(100, (reps / rank.nextThreshold) * 100) + '%';
+
+      if (reps >= 67) {
+        spawnConfettiBurst();
+      }
+
+      resultsModal.classList.remove('hidden');
+    }
+
+    // Boot Up Application
+    window.onload = () => {
+      initPoseLandmarker();
+    };
+  </script>
+</body>
+</html>
